@@ -1,0 +1,25 @@
+# K8s Proxy Spike
+
+This investigates how we might use Release Guardian to proxy traffic to service
+versions running in Kubernetes.
+
+
+## Running Locally
+
+Prerequisites:
+
+1. Clone this git repo.
+1. In your LD project, create the following resources (see the `drewinglis-test`
+   project in public prod for how to set them up):
+    1. `request` context kind.
+    1. `http-errors` metric.
+    1. `service-proxy-host` feature flag.
+1. Create a file in the root directory of this project named `sdk-key.txt` which
+   contains only your sdk key.
+
+### docker-compose
+
+1. Run `docker compose` to create the containers:
+```
+docker-compose up -d --build --force-recreate
+```
