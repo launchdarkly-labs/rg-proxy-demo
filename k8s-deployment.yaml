@@ -1,0 +1,183 @@
+# --- Deployment: BLUE ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-app
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: service-app
+        version: blue
+    spec:
+      containers:
+        - name: service-blue
+          image: service-app
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CONFIG_PATH
+              value: "blue.yaml"
+            - name: LAUNCHDARKLY_SDK_KEY_FILE
+              value: "/run/secrets/sdk-key"
+          volumeMounts:
+            - name: sdk-volume
+              mountPath: /run/secrets
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: false
+      volumes:
+        - name: sdk-volume
+          secret:
+            secretName: sdk-key
+
+---
+
+# --- Deployment: GREEN ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-green
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-app
+      version: green
+  template:
+    metadata:
+      labels:
+        app: service-app
+        version: green
+    spec:
+      containers:
+        - name: service-green
+          image: service-app
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CONFIG_PATH
+              value: "green.yaml"
+            - name: LAUNCHDARKLY_SDK_KEY_FILE
+              value: "/run/secrets/sdk-key"
+          volumeMounts:
+            - name: sdk-volume
+              mountPath: /run/secrets
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: false
+      volumes:
+        - name: sdk-volume
+          secret:
+            secretName: sdk-key
+
+---
+
+# --- Deployment: PROXY SERVER ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: proxy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: proxy-server
+  template:
+    metadata:
+      labels:
+        app: proxy-server
+    spec:
+      containers:
+        - name: proxy-server
+          image: service-proxy
+          ports:
+            - containerPort: 80
+          env:
+            - name: LAUNCHDARKLY_SDK_KEY_FILE
+              value: "/run/secrets/sdk-key"
+          volumeMounts:
+            - name: sdk-volume
+              mountPath: /run/secrets
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: false
+      volumes:
+        - name: sdk-volume
+          secret:
+            secretName: sdk-key
+
+---
+
+# --- Service: BLUE ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-blue
+spec:
+  selector:
+    app: service-app
+    version: blue
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+# --- Service: GREEN ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-green
+spec:
+  selector:
+    app: service-app
+    version: green
+  ports:
+    - port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+
+# --- Service: PROXY SERVER (Exposed) ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proxy-server
+spec:
+  selector:
+    app: proxy-server
+  ports:
+    - port: 80
+      targetPort: 80
+  type: ClusterIP
+
+---
+# --- Ingress to expose proxy-server ---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: proxy-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+spec:
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: proxy-server
+                port:
+                  number: 80
+

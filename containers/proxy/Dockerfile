@@ -41,5 +41,8 @@ COPY ./get_from_env_or_default.lua /usr/local/openresty/nginx/scripts/
 COPY  "./launchdarkly-server-sdk-${VERSION}-0.rockspec" ./
 COPY ./launchdarkly-server-sdk.c ./
 
+# Needed for k8s
+RUN mkdir -p /var/run/secrets/kubernetes.io/serviceaccount
+
 RUN luarocks make "launchdarkly-server-sdk-${VERSION}-0.rockspec" LD_DIR=./cpp-sdk-libs && \
     cp launchdarkly_server_sdk.so /usr/local/openresty/lualib/

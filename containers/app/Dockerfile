@@ -17,6 +17,9 @@ RUN apk add --no-cache \
     wget \
     && rm -rf /var/cache/apk/*
 
+# Needed for k8s
+RUN mkdir -p /var/run/secrets/kubernetes.io/serviceaccount
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 

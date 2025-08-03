@@ -23,3 +23,14 @@ Prerequisites:
 ```
 docker-compose up -d --build --force-recreate
 ```
+
+### Kubernetes
+
+1. Create the secret in kubernetes:
+```
+kubectl create secret generic sdk-key --from-file=sdk-key=./sdk-key.txt
+```
+1. Add the nginx ingress controller:
+```
+kubectl apply -f https://kind.sigs.k8s.io/examples/ingress/deploy-ingress-nginx.yaml
+```
