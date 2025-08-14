@@ -31,7 +31,8 @@ managed by the Guarded Rollout.
 Prerequisites:
 
 1. Clone this git repo.
-1. In your LD project, create the following resources:
+1. In your LD project, create the following resources (see our
+   [docs](rg-instructions) for more information):
     1. `request` context kind.
     1. `http-errors` metric. The metric must be enabled for experiments if you
        want to use it for a Guarded Rollout.
@@ -68,3 +69,5 @@ Prerequisites:
    ```
    docker-compose up -d --build --force-recreate
    ```
+
+[rg-instructions]: https://launchdarkly.com/docs/home/releases/creating-guarded-rollouts
