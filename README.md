@@ -48,7 +48,7 @@ Prerequisites:
 1. Create a file in the root directory of this project named `sdk-key.txt` which
    contains only your sdk key. (E.g. `cat sdk-key.txt` should output something
    like this:)
-   ```
+   ```bash
    $ cat sdk-key.txt
    sdk-(uuid)
    ```
@@ -59,7 +59,7 @@ Prerequisites:
    easiest to do a custom rollout with only a 50% traffic split. Enable
    auto-rollback if you want to see that in action.
 1. Send traffic to the nginx proxy, e.g. by repeatedly `curl`ing it:
-   ```
+   ```bash
    while true; do curl http://localhost:8080; echo ""; done
    ```
 1. You should see traffic going to the blue service only before you start the
@@ -70,7 +70,7 @@ Prerequisites:
 ### docker-compose
 
 1. Run `docker compose` to create the containers:
-   ```
+   ```bash
    docker-compose up -d --build --force-recreate
    ```
 
