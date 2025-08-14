@@ -33,9 +33,13 @@ Prerequisites:
 1. Clone this git repo.
 1. In your LD project, create the following resources (see our
    [docs](rg-instructions) for more information):
-    1. `request` context kind.
-    1. `http-errors` metric. The metric must be enabled for experiments if you
-       want to use it for a Guarded Rollout.
+    1. `request` context kind. Make sure to enable it for experiments! It does
+       not need to be the default, though.
+    1. `http-errors` metric. It should be set up with the `metric-key` and
+       `event-key` both equal to `http-errors`, as "Percentage of `request`
+       units that sent the event, where `lower is better` including units that
+       did not send any events, and setting their value to 0", and with the
+       `conversion: binary` metric kind.
     1. `service-proxy-host` feature flag. This should be a multivariate feature
        flag and its values should be the hostnames of the two containers. If
        you're using the default settings here, they should be `service-blue` and
