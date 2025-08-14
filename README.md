@@ -43,10 +43,10 @@ Prerequisites:
 1. Create a file in the root directory of this project named `sdk-key.txt` which
    contains only your sdk key. (E.g. `cat sdk-key.txt` should output something
    like this:)
-```
-$ cat sdk-key.txt
-sdk-(uuid)
-```
+   ```
+   $ cat sdk-key.txt
+   sdk-(uuid)
+   ```
 1. Follow the steps below to start the containers (currently only
    `docker-compose` is supported).
 1. Start a Guarded Rollout in the UI from the `service-blue` flag variation to
@@ -54,9 +54,9 @@ sdk-(uuid)
    easiest to do a custom rollout with only a 50% traffic split. Enable
    auto-rollback if you want to see that in action.
 1. Send traffic to the nginx proxy, e.g. by repeatedly `curl`ing it:
-```
-while true; do curl http://localhost:8080; echo ""; done
-```
+   ```
+   while true; do curl http://localhost:8080; echo ""; done
+   ```
 1. You should see traffic going to the blue service only before you start the
    rollout, then a mix of traffic to the blue and green services, then only blue
    again after the rollout is rolled back (if you selected auto-rollback).
@@ -65,6 +65,6 @@ while true; do curl http://localhost:8080; echo ""; done
 ### docker-compose
 
 1. Run `docker compose` to create the containers:
-```
-docker-compose up -d --build --force-recreate
-```
+   ```
+   docker-compose up -d --build --force-recreate
+   ```
